@@ -1,0 +1,24 @@
+<% include partials/header%>
+<div class = "container jumbotron text-center">
+	<h2>View our best selected campgrounds</h2>
+	<a href= "/new" class="btn btn-info" role="button">Submit  a new campground</a>
+</div>
+<div class = "container text-center" >
+	 <h1> List of Camping Grounds</h1>
+	 <div class = "row" style = "display:flex; flex-wrap:wrap">
+ 		 <% for(index= 0; index < campgrounds.length; index++){ %> 
+ 		   <div class = "col-lg-3 col-md-3 col-sm-6"> 
+	 		   <div class = "thumbnail">
+	 		   	<img src = "<%= campgrounds[index].image%>" class ="img-responsive">
+	 		   </div>
+ 		   <div class = "caption">
+ 		   	<h4><%= campgrounds[index].name%></h4>	
+ 		   </div>
+		    </div>
+  		<% } %>
+	 </div> 
+		<a href = "/">Back to Homepage<a/>
+</div>	
+	
+
+<% include partials/footer%>
