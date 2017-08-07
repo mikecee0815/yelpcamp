@@ -1,4 +1,5 @@
 var express = require('express');
+var expressSanitizer = require('express-sanitizer');
 var bodyParser = require('body-parser');
 
 // express handle
@@ -12,6 +13,7 @@ mongoose.connect ("mongodb://localhost/yelpcamp");
 
 
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(expressSanitizer());
 app.set('view engine','ejs' );
 app.listen(3000,function(){
 	console.log('YelpCamp server ready...');
@@ -79,14 +81,16 @@ app.get('/campgrounds/:id', function(req,res){
 
 // POST adds a new single campground
 app.post('/campgrounds', function(req,res){
-	
+
 	// get data from form and store it in variables
 	var name = req.body.name;
-	
 	var image = req.body.image;
+
+	// sanitize the form body object
+	req.body.description = req.sanitize(req.body.description );
 	
 	var description = req.body.description;
-	
+
 	var newCampground = {name:name, image:image, description:description}
 
 	// creates a new campground and save to database
