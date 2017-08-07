@@ -1,0 +1,23 @@
+<div class = "container text-center" >
+	 		
+	 		<h1 class="display-1"> List of Camping Grounds</h1>
+	
+	 <div class = "row" style = "display:flex; flex-wrap:wrap">
+ 		 
+ 		 <% campgrounds.forEach(function(campground){ %> 
+ 		 	<div class = "col-lg-3 col-md-3 col-sm-6"> 
+ 		 		<div class = "thumbnail">
+	 		   		<img src = "<%= campground.image%>" class ="img-responsive">
+	 		   	</div>
+	 		   	<div class = "caption">	
+	 		   		<h1> <%= campground.name%></h1>
+	 		   	</div>
+	 		   	
+	 		   	     <p><a href="<%= /campgrounds/campground._id%>" class ="btn btn-primary"></a></p>
+	 		   	
+ 		 	</div>
+ 		  <% }); %>
+ 		  
+	 </div> 
+		<a href = "/">Back to Homepage<a/>
+</div>	

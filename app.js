@@ -1,84 +1,104 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+
+// express handle
 var app = express();
+
+// 1: add database library
+var mongoose = require('mongoose');
+
+// 2: connect to the database
+mongoose.connect ("mongodb://localhost/yelpcamp");
+
+
 app.use(bodyParser.urlencoded({extended:true}));
 app.set('view engine','ejs' );
 app.listen(3000,function(){
 	console.log('YelpCamp server ready...');
 });
 
-var campgrounds = [
-	
-	{
-		name:"Big Bo's campground", 
-		image: "http://rv-camping.org/wp-content/uploads/2015/06/USACECampground.jpg"
-	},
-
-	{
-		name:"Big Bo's campground", 
-		image: "http://rv-camping.org/wp-content/uploads/2015/06/USACECampground.jpg"
-	},
-
-	{
-		name:"Big Bo's campground", 
-		image: "http://rv-camping.org/wp-content/uploads/2015/06/USACECampground.jpg"
-	},
-
-	{
-		name:"Big Bo's campground", 
-		image: "http://rv-camping.org/wp-content/uploads/2015/06/USACECampground.jpg"
-	},
-
-	{
-		name:"Big Bo's campground", 
-		image: "http://rv-camping.org/wp-content/uploads/2015/06/USACECampground.jpg"
-	},
-
-	{	
-		name:"Marleny's Campground", 
-		image: "http://21zfbaky162t2fou2u3pmsri4-wpengine.netdna-ssl.com/wp-content/uploads/2013/04/20121023_151802.jpg"
-	},
-
-	{	
-		name:"LIL Mike's Campground", 
-		image: "http://www.campjellystone.com/wp/wp-content/uploads/2012/08/IllinoisCamping1.jpg"
-	},
-
-	{	
-		name:"Green Path Campground", 
-		image: "https://www.fs.usda.gov/Internet/FSE_MEDIA/stelprdb5276184.jpg"
-	}
-
-	];
-
-
-
-//routes
-app.get('/', function(req,res){
-	res.render('landing');
+// 3: create schema
+var campgroundSchema = mongoose.Schema({
+	name: String,
+	image: String,
+	description:String
 });
 
+// 4: declare a model and glue it to the schema
+var Campground = mongoose.model("Campground", campgroundSchema );
+
+// 5: create a campground entry
+// Campground.create(
+// 	{
+// 		name:"Vida Guerra's Camp Hill", 
+// 		image: "http://ll-media.tmz.com/2015/02/10/vida-guerra-sexy-thong-bikini-photos-013-480w.jpg",
+// 		description:"Vida's Booty shot"
+// 	},function(err, campground){
+// 		if (err) {
+// 			console.log("something went wrong");
+// 		} else {
+// 			console.log("Entry campground added");
+// 			console.log(campground);
+// 		}
+// 	})
+
+// ROUTES =======================================
+
+// Displays all campgrounds 
 app.get('/campgrounds', function(req,res){
-	
-	res.render('campgrounds',{campgrounds:campgrounds});
+
+	Campground.find({} ,function(err, allCampgrounds){
+		if (err) {
+			console.log('something went wrong');	
+		} else {
+			res.render('index',{campgrounds:allCampgrounds});
+		}
+	});
 });
 
+// NEW  displays the form to add a new campground
 app.get('/new', function(req,res){
 	res.render('new');
 });
 
+// SHOW  displays  a single campground
+app.get('/campgrounds/:id', function(req,res){
+
+	Campground.findById(req.params.id, function(err, campgroundItem){
+		
+		var campgroundResult = {campground:campgroundItem};
+		
+		if (err) {
+			console.log('Request failed')
+		} else {
+			res.render('show', campgroundResult);
+		}
+	})
+	
+});
+
+// POST adds a new single campground
 app.post('/campgrounds', function(req,res){
 	
 	// get data from form and store it in variables
 	var name = req.body.name;
-	var image = req.body.image;
-
-	var newCampground = {name:name, image:image}
-	campgrounds.push(newCampground);
-	console.log(campgrounds);
 	
-	// redirect back to landing page
-	res.redirect('/campgrounds');
+	var image = req.body.image;
+	
+	var description = req.body.description;
+	
+	var newCampground = {name:name, image:image, description:description}
+
+	// creates a new campground and save to database
+	Campground.create(newCampground, function(err, newCamp){
+		
+		if (err) {
+			console.log('something went wrong');	
+		} else{
+			// redirect back to landing page
+			res.redirect('/campgrounds');
+		}	
+	});	
 });
 
 
