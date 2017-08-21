@@ -1,0 +1,32 @@
+<% include ../partials/header%>
+<div class ="container"> 
+	
+	<div class = "row">
+		
+		<div class = "col-md-6 text-center">
+
+			<h1 class="display-1"> Single campground information</h1>
+
+			<h2><%=  campground.name%></h2>
+
+			<p><%=  campground.description%></p>
+
+			<img  src="<%=  campground.image%>" class = "img-responsive"/>
+
+			<% campground.comments.forEach(function(comment) { %>
+				<strong><p><%= comment.author%></p></strong> <p><%= comment.text %></p>
+
+		<% }) %>
+		<p> <a href="/campgrounds/<%=campground._id%>/comments/new/"%> class="btn btn-success btn-large">New Post</a> </p>
+</div>
+
+		</div>
+	</row>
+	
+	
+
+
+<% include ../partials/footer%>
+
+
+
